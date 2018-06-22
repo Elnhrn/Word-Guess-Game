@@ -1,84 +1,203 @@
-// declaring and initializing variables for wins, guesses, guessed letters and words as arrays
 var win = 0;
-var guesses = 13;
+var guesses = 10;
 var guessedLetters = [];
+var pickedWord = "";
+var pickedWordPlaceholder = [];
+var wrongLetters = [];
+var wordBank = ["barbeque", "swimming", "roadtrip"];
+var gameRunning = false;
 
-var allTheWords = {
-    // first word = barbeque
-    "firstword": ["_", "_", "_", "_", "_", "_", "_", "_"],
-    // second word = brother
-    "secondword": ["_", "_", "_", "_", "_", "_", "_", "_"],
-    // third word = bumblebee
-    "thirdword": ["_", "_", "_", "_", "_", "_", "_", "_","_","_"]
-};
+/*
+function showTheOutput() {
+    document.getElementById("startMsg").textContent = "";
+    document.getElementById("wins").textContent = "Wins: " + win;
+    document.getElementById("guesses").textContent = "Guesses remaining: " + guesses;
+    document.getElementById("alreadyGuessed").textContent = "Letters already guessed: " + guessedLetters;
+}
+*/
 
-var roundOne = allTheWords.firstword;
-var roundTwo = allTheWords.secondword;
-var roundThree = allTheWords.thirdword;
+function newGame() {
+    guesses = 10;
+    guessedLetters = [];
+    pickedWord = "";
+    pickedWordPlaceholder = [];
+    wrongLetters = [];
+    gameRunning = true;
+
+    pickedWord = wordBank[Math.floor((Math.random() * wordBank.length))];
+
+    for (var i = 0; i < pickedWord.length; i++) {
+        pickedWordPlaceholder.push("_");
+    }
+
+    document.getElementById("currentWord").textContent = pickedWordPlaceholder.join(" ");
+    document.getElementById("guesses").textContent = guesses;
+    document.getElementById("alreadyGuessed").textContent = wrongLetters.join(", ");
+}
+
+function evaluateGuess(letter) {
+    if (gameRunning === true && guessedLetters.indexOf(letter) === -1) {
+        // run game here
+        guessedLetters.push(letter);
+        for (var i = 0; i < pickedWord.length; i++) {
+            if (pickedWord[i].toLowerCase() === letter.toLowerCase()) {
+                pickedWordPlaceholder[i] = pickedWord[i];
+            }
+        }
+        document.getElementById("currentWord").innerHTML = pickedWordPlaceholder.join(" ");
+        isWrong(letter);
+        checkWin();
+    }
+}
+
+function lose() {
+    if (guesses == 0) {
+        alert("You done goofed.");
+        return;
+    }
+}
+
+function isWrong(letter) {
+    if (pickedWordPlaceholder.indexOf(letter.toLowerCase()) === -1 && pickedWordPlaceholder.indexOf(letter.toUpperCase()) === -1) {
+        guesses--;
+        wrongLetters.push(letter);
+        document.getElementById("guesses").textContent = guesses;
+        document.getElementById("alreadyGuessed").textContent = wrongLetters.join(", ");
+    }
+    lose();
+}
+
+function checkWin() {
+    if (pickedWordPlaceholder.indexOf("_") === -1) {
+        win++;
+        alert("I ALWAYS BELIEVED IN YOU.");
+    }
+    document.getElementById("wins").textContent = win;
+}
 
 document.onkeyup = function (event) {
-    // Determines which key was pressed.
-    var userGuess = event.key;
-
-    document.getElementById("startMsg").textContent = "";
-
-
-    // switch everything to js. i can't deal with jquery anymore.
-    $("#wins").html("Wins: " + win);
-
-    $("#currentWord").html("Current Word");
-    $("#theWord").html(roundOne.join(" "));
-
-    $("#guesses").html("Number of guesses remaining: " + guesses);
-    $("#alreadyGuessed").html("Letters already guessed: " + guessedLetters);
-
-
-
-    if (userGuess == "b" && guesses > -1) {
-        roundOne.splice(0, 1, "B");
-        roundOne.splice(3, 1, "B");
-        roundOne;
-        $("#theWord").html(roundOne.join(" "));
-        guesses--;
-    } else if (userGuess == "a" && guesses > -1) {
-        roundOne.splice(1, 1, "A");
-        roundOne;
-        $("#theWord").html(roundOne.join(" "));
-        guesses--;
-    } else if (userGuess == "r" && guesses > -1) {
-        roundOne.splice(2, 1, "R");
-        roundOne;
-        $("#theWord").html(roundOne.join(" "));
-        guesses--;
-    } else if (userGuess == "e" && guesses > -1) {
-        roundOne.splice(4, 1, "E");
-        roundOne.splice(7, 1, "E");
-        roundOne;
-        $("#theWord").html(roundOne.join(" "));
-        guesses--;
-    } else if (userGuess == "q" && guesses > -1) {
-        roundOne.splice(5, 1, "Q");
-        roundOne;
-        $("#theWord").html(roundOne.join(" "));
-        guesses--;
-    } else if (userGuess == "u" && guesses > -1) {
-        roundOne.splice(6, 1, "U");
-        roundOne;
-        $("#theWord").html(roundOne.join(" "));
-        guesses--;
-    } else {
-        guessedLetters.push(userGuess.toUpperCase());
-        guesses--;
+    if (event.keyCode >= 65 && event.keyCode <= 90) {
+        evaluateGuess(event.key);
     }
-});
+}
 
-// TO DO:
-// 1. think of a word
-// 2. create the _ for each letter
-// 3. show number of guesses
-// 4. when user selects key, determine if it is correct or not.
-//      a.if it is correct, show on the line.
-//      b. if not, show under "letters already guessed."
-//      c. repeat until user guesses each letter correctly with guesses still remaining. 
-// 5. when user wins, tally ++ for "wins"
-// 6. when user enters any key, pop up a new word and restart
+// click functions
+window.onload=function(){
+    document.getElementById("newgamebtn").addEventListener("click", newGame);
+}
+
+/*
+document.onkeydown = function (event) {
+    var letter = event.key.toLowerCase();
+
+    for (var i = 0; i < wordBank[Math.floor((Math.random() * wordBank.length))].length; i++) {
+        guessThisWord.push("_");
+    }
+
+    if (guesses == 0) {
+        newGame();
+
+    } else if (guesses > 0 && event.keyCode >= 65 && event.keyCode <= 90) {
+
+        if (guessedArray.indexOf(letter) === -1) {
+            guessedArray.push(letter);
+
+            if (positions.length <= 0) {
+                guesses--;
+            } else {
+                for (var i = 0; i > positions.length; i++) {
+                    guessThisWord[positions[i]] = letter;
+                }
+            }
+        }
+    }
+    showTheOutput();
+    checkWin();
+}
+
+    if (round == 1) {
+
+        var index = firstword.indexOf(userGuess);
+
+        // when user key input matches the first word
+        if (index > -1) {
+            // add user key input to matchArray
+            matchArray.push(userGuess);
+            // for loop for if index matches, print out textContent with updated firstword (with underscores and matched letters)
+            for (var i = 0; i < firstword.length; i++) {
+                if (matchArray.indexOf(firstword[i]) > -1) {
+                    console.log(matchArray.indexOf(firstword[i]));
+                    document.getElementById("theWord").textContent = firstword[i];
+                } // if
+                else {
+                    document.getElementById("theWord").textContent = "_";
+                }
+                showTheOutput();
+            } // for
+        } else {
+            // add user key input to guessArray
+            guessArray.push(userGuess);
+            showTheOutput();
+            return;
+        } // else
+
+    } else if (round == 2) {
+
+    } // round 2 
+    else if (round == 3) {
+
+    } // round 3
+
+} // function
+
+// TODO (after Ron's advice)
+// populate array with letters
+// use indexOf()
+// 3 arrays: 1) array of word to guess, 2) array of matched letters, 3) array of guessed letters
+// for loop wordArray
+// start the game and start letter guessing with another key press
+// don't accept non-letters
+// alert windows when user wins and/or loses
+// create a function that'll automatically set up the next round
+
+    if (guesses > -1) {
+
+        if (userGuess == "b") {
+            roundOne.splice(0, 1, "B");
+            roundOne.splice(3, 1, "B");
+            roundOne;
+            $("#theWord").html(roundOne.join(" "));
+            guesses--;
+        } else if (userGuess == "a") {
+            roundOne.splice(1, 1, "A");
+            roundOne;
+            $("#theWord").html(roundOne.join(" "));
+            guesses--;
+        } else if (userGuess == "r") {
+            roundOne.splice(2, 1, "R");
+            roundOne;
+            $("#theWord").html(roundOne.join(" "));
+            guesses--;
+        } else if (userGuess == "e") {
+            roundOne.splice(4, 1, "E");
+            roundOne.splice(7, 1, "E");
+            roundOne;
+            $("#theWord").html(roundOne.join(" "));
+            guesses--;
+        } else if (userGuess == "q") {
+            roundOne.splice(5, 1, "Q");
+            roundOne;
+            $("#theWord").html(roundOne.join(" "));
+            guesses--;
+        } else if (userGuess == "u") {
+            roundOne.splice(6, 1, "U");
+            roundOne;
+            $("#theWord").html(roundOne.join(" "));
+            guesses--;
+        } else {
+            guessedLetters.push(userGuess.toUpperCase());
+            guesses--;
+        }
+}
+
+*/

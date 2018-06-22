@@ -1,3 +1,18 @@
 h1, h2, h3 {
     text-align: center;
 }
+
+.container {
+    width: 600px;
+}
+
+body {
+    margin-top: 20px;
+    background-image: url("../images/background.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+h1 {
+    font-family: 'Spirax', cursive;
+}
