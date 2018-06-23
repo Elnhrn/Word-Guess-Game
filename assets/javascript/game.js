@@ -1,20 +1,13 @@
 var win = 0;
+var loss = 0;
 var guesses = 10;
 var guessedLetters = [];
 var pickedWord = "";
 var pickedWordPlaceholder = [];
 var wrongLetters = [];
-var wordBank = ["barbeque", "swimming", "roadtrip"];
+var wordBank = ["barbeque", "swimming", "roadtrip","beach","popsicle"];
 var gameRunning = false;
-
-/*
-function showTheOutput() {
-    document.getElementById("startMsg").textContent = "";
-    document.getElementById("wins").textContent = "Wins: " + win;
-    document.getElementById("guesses").textContent = "Guesses remaining: " + guesses;
-    document.getElementById("alreadyGuessed").textContent = "Letters already guessed: " + guessedLetters;
-}
-*/
+var imgArr = ["assets/images/bulldog.jpeg","assets/images/lazy.jpeg","assets/images/baby.jpeg","assets/images/orangutan.jpeg","assets/images/sprinklers.jpg"]
 
 function newGame() {
     guesses = 10;
@@ -30,9 +23,11 @@ function newGame() {
         pickedWordPlaceholder.push("_");
     }
 
+    document.getElementById("img-here").src = imgArr[Math.floor((Math.random() * imgArr.length))];
     document.getElementById("currentWord").textContent = pickedWordPlaceholder.join(" ");
     document.getElementById("guesses").textContent = guesses;
     document.getElementById("alreadyGuessed").textContent = wrongLetters.join(", ");
+    document.getElementById("myAudio").pause();
 }
 
 function evaluateGuess(letter) {
@@ -52,7 +47,9 @@ function evaluateGuess(letter) {
 
 function lose() {
     if (guesses == 0) {
+        loss++;
         alert("You done goofed.");
+        document.getElementById("lose").textContent = loss;
         return;
     }
 }
@@ -70,21 +67,32 @@ function isWrong(letter) {
 function checkWin() {
     if (pickedWordPlaceholder.indexOf("_") === -1) {
         win++;
+        document.getElementById("wins").textContent = win;
+        document.getElementById("myAudio").play();
         alert("I ALWAYS BELIEVED IN YOU.");
     }
-    document.getElementById("wins").textContent = win;
 }
 
+// key/load functions
 document.onkeyup = function (event) {
     if (event.keyCode >= 65 && event.keyCode <= 90) {
         evaluateGuess(event.key);
     }
 }
 
-// click functions
 window.onload=function(){
     document.getElementById("newgamebtn").addEventListener("click", newGame);
 }
+
+/*
+function showTheOutput() {
+    document.getElementById("startMsg").textContent = "";
+    document.getElementById("wins").textContent = "Wins: " + win;
+    document.getElementById("guesses").textContent = "Guesses remaining: " + guesses;
+    document.getElementById("alreadyGuessed").textContent = "Letters already guessed: " + guessedLetters;
+}
+*/
+
 
 /*
 document.onkeydown = function (event) {
