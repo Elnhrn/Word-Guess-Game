@@ -5,9 +5,9 @@ var guessedLetters = [];
 var pickedWord = "";
 var pickedWordPlaceholder = [];
 var wrongLetters = [];
-var wordBank = ["barbeque", "swimming", "roadtrip","beach","popsicle"];
+var wordBank = ["barbeque", "swimming", "roadtrip", "beach", "popsicle"];
 var gameRunning = false;
-var imgArr = ["assets/images/bulldog.jpeg","assets/images/lazy.jpeg","assets/images/baby.jpeg","assets/images/orangutan.jpeg","assets/images/sprinklers.jpg"]
+var imgArr = ["assets/images/bulldog.jpeg", "assets/images/lazy.jpeg", "assets/images/baby.jpeg", "assets/images/orangutan.jpeg", "assets/images/sprinklers.jpg"]
 
 function newGame() {
     guesses = 10;
@@ -80,7 +80,8 @@ document.onkeyup = function (event) {
     }
 }
 
-window.onload=function(){
+window.onload = function () {
+    newGame();
     document.getElementById("newgamebtn").addEventListener("click", newGame);
 }
 
